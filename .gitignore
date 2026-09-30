@@ -1,0 +1,17 @@
+# ── Dependencies ───────────────────────────────────────
+node_modules/
+
+# ── Secrets / environment ──────────────────────────────
+.env
+*.env.local
+
+# ── Logs / build ───────────────────────────────────────
+*.log
+dist/
+build/
+
+# ── OS / editor ────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

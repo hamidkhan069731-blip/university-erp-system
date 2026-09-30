@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Demo university website: programs, admissions and news.">
+<title>University website demo</title>
+<style>
+/* Design tokens: edit here to re-theme the whole site */
+:root{--bg:#f6f4fa;--card:#fff;--ink:#1d1a2b;--mut:#615e75;--line:#dcd7ea;--btn:#3e1f6b;--focus:#254bb5;--ok:#17724a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131120;--card:#1c1930;--ink:#ece9f8;--mut:#a9a6c0;--line:#332e50;--btn:#6b3fb3;--focus:#8aa8ff;--ok:#4cc38a}}
+:root[data-theme="dark"]{--bg:#131120;--card:#1c1930;--ink:#ece9f8;--mut:#a9a6c0;--line:#332e50;--btn:#6b3fb3;--focus:#8aa8ff;--ok:#4cc38a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:600;line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(1.9rem,5vw,3rem)}h2{font-size:1.6rem}h3{font-size:1.1rem}
+a{color:inherit}
+.w{max-width:960px;margin:0 auto;padding:0 16px}
+section{padding:36px 0;border-bottom:1px solid var(--line)}
+.mut{color:var(--mut)}
+header.top{background:var(--card);border-bottom:1px solid var(--line);position:relative}
+header .w{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+header nav{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+header nav a,summary{text-decoration:none;cursor:pointer;padding:4px 2px}
+details{position:relative}
+.menu{position:absolute;right:0;top:100%;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:6px;min-width:200px;padding:6px;display:grid}
+.menu a{padding:8px 10px}
+.btn{display:inline-block;background:var(--btn);color:#fff;border:0;border-radius:6px;padding:10px 18px;font:inherit;cursor:pointer;text-decoration:none}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--btn)}
+:is(a,button,summary,input,select):focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.hero{background:#3e1f6b;color:#fff;border:0;padding:44px 0 32px}
+.hero p{max-width:60ch;font-size:1.1rem;margin:0 0 18px}
+.hero input{width:100%;max-width:520px;padding:12px 14px;border-radius:6px;border:0;font:inherit;color:#1d1a2b}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chips button{font:inherit;cursor:pointer;background:transparent;color:#fff;border:1.5px solid #cbb8ee;border-radius:99px;padding:5px 14px}
+.chips button[aria-pressed="true"]{background:#fff;color:#3e1f6b;border-color:#fff}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--mut);font-weight:600;font-size:.9rem}
+ol.steps{padding-left:1.2em;margin:0 0 24px}ol.steps li{margin:6px 0}
+.fg{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-bottom:14px}
+label{display:grid;gap:4px;font-weight:600}
+input,select{font:inherit;padding:10px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.news{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.news article{border-top:3px solid var(--btn);padding-top:10px}
+.ok{color:var(--ok);font-weight:600}
+footer{padding:28px 0;color:var(--mut);font-size:.9rem}
+footer .w{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between}
+</style>
+</head>
+<body>
+<header class="top"><div class="w">
+  <strong id="uni"></strong>
+  <nav aria-label="Main">
+    <a href="#about">About</a><a href="#academics">Academics</a><a href="#admissions">Admissions</a><a href="#news">News</a>
+    <details><summary>Portals</summary><div class="menu" id="portals"></div></details>
+    <a class="btn" href="#apply">Apply online</a>
+  </nav>
+</div></header>
+
+<main>
+<section class="hero" id="about"><div class="w">
+  <h1>Find the program that fits you</h1>
+  <p>Search programs across every faculty, then apply in a few minutes. Fall 2026 admissions are open (sample text).</p>
+  <label class="sr" for="q" style="position:absolute;left:-9999px">Search programs</label>
+  <input id="q" type="search" placeholder="Try &quot;computer&quot;, &quot;law&quot; or &quot;MBA&quot;" autocomplete="off">
+  <div class="chips" id="chips" role="group" aria-label="Filter by faculty"></div>
+</div></section>
+
+<section id="academics"><div class="w">
+  <h2>Academics</h2>
+  <p class="mut" id="count"></p>
+  <div class="tw"><table><thead><tr><th>Program</th><th>Faculty</th><th>Level</th><th>Years</th><th></th></tr></thead><tbody id="res"></tbody></table></div>
+</div></section>
+
+<section id="admissions"><div class="w">
+  <h2>Admissions</h2>
+  <ol class="steps">
+    <li>Submit the online application below.</li>
+    <li>Upload your documents after you receive an application number.</li>
+    <li>Attend the entry test or interview.</li>
+    <li>Pay the fee voucher to confirm your seat.</li>
+  </ol>
+  <h3 id="apply">Apply online</h3>
+  <p class="mut">Your application is saved on the server. While this is a demo, please do not enter real personal details.</p>
+  <form id="f">
+    <div class="fg">
+      <label>Full name<input name="name" required autocomplete="off"></label>
+      <label>Email<input name="email" type="email" required autocomplete="off"></label>
+      <label>Mobile number<input name="phone" inputmode="tel" required autocomplete="off"></label>
+      <label>Program<select name="program" id="prog" required></select></label>
+      <label>Last qualification<select name="qual"><option>Matric</option><option>Intermediate / A-levels</option><option>Bachelor's</option></select></label>
+      <label>Marks (%)<input name="marks" type="number" min="33" max="100" step="0.01" required></label>
+    </div>
+    <button class="btn" type="submit">Submit application</button>
+    <p id="ok" class="ok" role="status"></p>
+  </form>
+  <h3>Applications received in this browser</h3>
+  <div class="tw"><table><thead><tr><th>Number</th><th>Name</th><th>Program</th><th>Date</th></tr></thead><tbody id="apps"></tbody></table></div>
+  <p><button class="btn alt" id="clr" type="button">Clear list</button></p>
+</div></section>
+
+<section id="news"><div class="w">
+  <h2>News</h2>
+  <div class="news">
+    <article><h3>Fall 2026 admissions close soon</h3><p class="mut">Sample item. Last date to apply and how to submit documents.</p></article>
+    <article><h3>Call for papers: Research Week</h3><p class="mut">Sample item. Faculty and students can submit abstracts online.</p></article>
+    <article><h3>Career fair brings 40 employers to campus</h3><p class="mut">Sample item. Register through the student portal.</p></article>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="w">
+  <div><strong id="uni2"></strong><br>Main campus, City (sample address)<br>info@example.edu (sample)</div>
+  <div>Demo website with sample content. Not an official university site.</div>
+</div></footer>
+
+<script>
+/* SETTINGS: name, portal links and programs. In a real project these come from the database. */
+const UNI = 'Your University';
+const PORTALS = [['Student / Faculty / Admin Portal','/portal.html'],['LMS','#'],['Alumni portal','#']];
+const P = [
+ ['Computer Science & IT','BS Computer Science','Undergraduate',4],['Computer Science & IT','BS Software Engineering','Undergraduate',4],['Computer Science & IT','MS Data Science','Postgraduate',2],
+ ['Business & Management','BBA (Hons)','Undergraduate',4],['Business & Management','MBA','Postgraduate',2],
+ ['Engineering & Technology','BSc Electrical Engineering','Undergraduate',4],['Engineering & Technology','BSc Civil Engineering','Undergraduate',4],
+ ['Law','LLB','Undergraduate',5],['Pharmacy','Pharm.D','Undergraduate',5],['Allied Health','Doctor of Physical Therapy','Undergraduate',5],
+ ['Art & Design','BFA Fine Arts','Undergraduate',4],['Social Sciences','BS Psychology','Undergraduate',4],['Sciences','BS Chemistry','Undergraduate',4],['Sciences','MS Chemistry','Postgraduate',2]
+];
+const K = 'site_apps_v1';
+const $ = id => document.getElementById(id);
+let q = '', fac = 'All', A = [];
+try { A = JSON.parse(localStorage.getItem(K)) || []; } catch (e) { A = []; }
+
+$('uni').textContent = $('uni2').textContent = UNI;
+$('portals').innerHTML = PORTALS.map(p => '<a href="' + p[1] + '">' + p[0] + '</a>').join('');
+// Programs now come from the database, so the form sends real program ids.
+fetch('/api/programs').then(r => r.json()).then(l => { $('prog').innerHTML = l.map(p => '<option value="' + p.id + '">' + p.name + '</option>').join(''); });
+
+const facs = ['All'].concat([...new Set(P.map(p => p[0]))]);
+function drawChips(){
+  $('chips').innerHTML = facs.map(x => '<button type="button" data-f="' + x + '" aria-pressed="' + (x === fac) + '">' + x + '</button>').join('');
+}
+function drawRes(){
+  const r = P.map((p, i) => [p, i]).filter(([p]) => (fac === 'All' || p[0] === fac) && (p[1] + ' ' + p[0]).toLowerCase().includes(q));
+  $('count').textContent = r.length + ' of ' + P.length + ' programs';
+  $('res').innerHTML = r.length ? r.map(([p, i]) => '<tr><td>' + p[1] + '</td><td>' + p[0] + '</td><td>' + p[2] + '</td><td>' + p[3] + '</td><td><button class="btn alt" type="button" data-a="' + i + '">Apply</button></td></tr>').join('')
+    : '<tr><td colspan="5">No program matches. Clear the search or choose All.</td></tr>';
+}
+function drawApps(){
+  $('apps').innerHTML = A.length ? A.map(a => '<tr><td>' + a.no + '</td><td>' + a.name.replace(/</g, '&lt;') + '</td><td>' + a.program + '</td><td>' + a.date + '</td></tr>').join('')
+    : '<tr><td colspan="4" class="mut">No applications yet. Submit the form above.</td></tr>';
+}
+function store(){ try { localStorage.setItem(K, JSON.stringify(A)); } catch (e) {} }
+
+$('q').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); drawRes(); });
+$('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ fac = b.dataset.f; drawChips(); drawRes(); } });
+$('res').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const o = [...$('prog').options].find(o => o.textContent === P[b.dataset.a][1]); if (o) $('prog').value = o.value;
+  $('apply').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  document.querySelector('[name=name]').focus({preventScroll: true});
+});
+$('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const d = new FormData(e.target);
+  const body = {full_name: d.get('name'), email: d.get('email'), phone: d.get('phone'), program_id: +d.get('program'), last_qualification: d.get('qual'), marks_percent: +d.get('marks')};
+  try {
+    const r = await fetch('/api/applications', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+    const j = await r.json();
+    if (!r.ok) { $('ok').style.color = '#b3261e'; $('ok').textContent = j.error || 'Could not submit. Please try again.'; return; }
+    const prog = $('prog').selectedOptions[0].textContent;
+    A.push({no: j.application_no, name: body.full_name, program: prog, date: new Date().toISOString().slice(0, 10)});
+    store(); drawApps(); e.target.reset();
+    $('ok').style.color = ''; $('ok').textContent = 'Application ' + j.application_no + ' received for ' + prog + '. Keep this number for the next step.';
+  } catch (err) { $('ok').style.color = '#b3261e'; $('ok').textContent = 'Server not reachable. Please try again in a moment.'; }
+});
+$('clr').addEventListener('click', () => { A = []; store(); drawApps(); $('ok').textContent = ''; });
+drawChips(); drawRes(); drawApps();
+</script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ERP portal</title>
+<style>
+:root{--bg:#eef1f6;--card:#fff;--ink:#101827;--mut:#5b6474;--line:#e2e6ee;--btn:#155e63;--btn2:#1c7a80;--focus:#2f6fed;--ok:#0f7a4d;--warn:#b5650a;--side:#0b1f2b;--side2:#123241;--shadow:0 1px 2px rgba(16,24,39,.06),0 8px 24px -12px rgba(16,24,39,.18);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1116;--card:#161d26;--ink:#e9edf3;--mut:#93a0b4;--line:#26303e;--btn:#28a0a8;--btn2:#2fb8bf;--focus:#7aa2ff;--ok:#3fcf8e;--warn:#f0a940;--side:#0a141c;--side2:#101f2a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.5)}}
+:root[data-theme="dark"]{--bg:#0c1116;--card:#161d26;--ink:#e9edf3;--mut:#93a0b4;--line:#26303e;--btn:#28a0a8;--btn2:#2fb8bf;--focus:#7aa2ff;--ok:#3fcf8e;--warn:#f0a940;--side:#0a141c;--side2:#101f2a;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.5)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+h1,h2,h3{font-family:"Poppins",system-ui,sans-serif;font-weight:600;margin:.2em 0 .4em;letter-spacing:-.01em}
+h1{font-size:1.55rem}h2{font-size:1.2rem}h3{font-size:1.02rem}
+button{font:inherit;cursor:pointer}
+:is(button,select,input,textarea):focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.mut{color:var(--mut)}
+.btn{background:linear-gradient(135deg,var(--btn),var(--btn2));color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:600;box-shadow:var(--shadow)}
+.btn:disabled{opacity:.6;cursor:default}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.lnk{background:none;border:0;color:inherit;text-decoration:underline;padding:4px}
+.gate{max-width:420px;margin:0 auto;padding:9vh 16px 16px}
+.gate p{margin-top:0}
+.roles{display:grid;gap:12px;margin:20px 0}
+.role{display:flex;align-items:center;gap:14px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.role b{display:block}.role span{color:var(--mut);font-size:.9rem}
+.role em{font-style:normal;font-size:1.5rem;width:38px;text-align:center;flex:none}
+label{display:block;font-weight:600;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:10px 11px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.err{color:var(--warn);min-height:1.3em;margin:8px 0 0}
+.shell{display:flex;min-height:100vh}
+.side{background:linear-gradient(180deg,var(--side),var(--side2));color:#c9dbe3;width:238px;flex:none;padding:16px 12px;padding-top:calc(16px + env(safe-area-inset-top,0px));overflow-y:auto;max-height:100vh}
+.side .brand{font-weight:700;font-family:"Poppins",system-ui,sans-serif;padding:2px 10px 14px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+.side button{display:block;width:100%;text-align:left;background:none;border:0;color:#a9c1cb;padding:9px 11px;border-radius:8px;margin:2px 0;font-size:.9rem}
+.side button.on{background:rgba(47,184,191,.16);color:#fff;font-weight:600;box-shadow:inset 3px 0 0 var(--btn2)}
+.side button:hover:not(.on){background:rgba(255,255,255,.05)}
+.side .out{margin-top:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;color:#a9c1cb}
+.main{flex:1;min-width:0;padding:22px 26px 44px}
+@media (max-width:680px){.shell{flex-direction:column}.side{width:100%;max-height:none;display:flex;flex-wrap:wrap;align-items:center;gap:2px}.side .brand{width:100%;border:0;margin:0 0 6px}.side .out{margin:0 0 0 auto;border:0;padding:0}.main{padding:16px}}
+.quick{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:22px}
+.quick a,.quick button{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;border:0;border-radius:12px;padding:15px 18px;font-weight:600;text-decoration:none;font-size:.94rem;box-shadow:var(--shadow)}
+.q1{background:linear-gradient(135deg,#c2410c,#ea580c)}.q2{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}.q3{background:linear-gradient(135deg,#155e63,#1c7a80)}.q4{background:linear-gradient(135deg,#0f7a4d,#16a35f)}
+.pbar{display:flex;align-items:center;gap:12px;margin:11px 0}
+.pbar b{width:180px;font-weight:500;font-size:.92rem}
+.pbar .track{flex:1;background:var(--line);border-radius:99px;height:9px;overflow:hidden}
+.pbar .fill{background:linear-gradient(90deg,var(--btn),var(--btn2));height:100%;border-radius:99px}
+.pbar span{width:52px;text-align:right;font-weight:600}
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow)}
+.card .n{display:block;font-size:1.55rem;font-weight:700;font-family:"Poppins",system-ui,sans-serif}
+.two{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.person{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;display:flex;gap:12px;align-items:center;box-shadow:var(--shadow)}
+.avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--btn),var(--btn2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.classcard{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--btn2);border-radius:12px;padding:14px;margin-bottom:11px;box-shadow:var(--shadow)}
+.time{display:inline-block;background:linear-gradient(135deg,var(--btn),var(--btn2));color:#fff;border-radius:99px;padding:3px 12px;font-size:.8rem;margin-bottom:7px;font-weight:600}
+.tw{overflow-x:auto;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;min-width:460px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:.92rem}
+th{color:var(--mut);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.78rem;font-weight:600}
+.pill.ok{background:#d3f5e4;color:#0d5a37}.pill.warn{background:#fce4c4;color:#7a4a00}
+:root[data-theme="dark"] .pill.ok{background:#123626;color:#7fe0af}
+:root[data-theme="dark"] .pill.warn{background:#4a3312;color:#f5c374}
+.notif{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:9px;box-shadow:var(--shadow)}
+.reqgrid{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:18px}
+.reqgrid button{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px;text-align:left;font-size:.9rem;box-shadow:var(--shadow)}
+.reqgrid button:hover{border-color:var(--btn2)}
+.spin{color:var(--mut);padding:20px 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const API = ''; // same origin
+let token = null, role = null, err = '', tab = '', me = null; // me: {name, role}
+const WEEKDAY = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const REQ_TYPES = ['Alternative Course','Retest','Course Drop','I-Grade Request','Defer Term','Term Resume','Final Degree'];
+
+async function api(path, opts = {}) {
+  const r = await fetch(API + path, { ...opts, headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}), ...(opts.headers || {}) } });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Something went wrong.');
+  return j;
+}
+const money = n => 'PKR ' + Number(n).toLocaleString();
+const time = t => { const [h, m] = t.split(':'); const H = +h % 12 || 12; return H + ':' + m + (+h < 12 ? ' AM' : ' PM'); };
+
+const ROLES = [
+  { id: 'student', icon: '\ud83c\udf93', label: 'Student Portal', hint: 'Sign in with your university email' },
+  { id: 'faculty', icon: '\ud83e\uddd1\u200d\ud83c\udfeb', label: 'Faculty / Staff Intranet', hint: 'Sign in with your university email' },
+  { id: 'admin', icon: '\ud83d\udee1\ufe0f', label: 'Admin Office', hint: 'Sign in with your admin email' },
+];
+
+function gate() {
+  if (!role) return '<div class="gate"><h1>ERP portal</h1><p class="mut">Real login — data is read from and saved to the database.</p>' +
+    '<div class="roles">' + ROLES.map(r => '<button class="role" data-role="' + r.id + '"><em>' + r.icon + '</em><span><b>' + r.label + '</b><span>' + r.hint + '</span></span></button>').join('') + '</div></div>';
+  const R = ROLES.find(r => r.id === role);
+  return '<div class="gate"><button class="lnk" data-back>&larr; Choose a different portal</button><h1>' + R.label + '</h1>' +
+    '<form id="login"><label for="em">Email</label><input id="em" autocomplete="off" placeholder="name@example.edu">' +
+    '<label for="pw">Password</label><input id="pw" type="password" autocomplete="off">' +
+    '<p class="err" role="status">' + err + '</p><button class="btn" type="submit" style="width:100%">Sign in</button></form>' +
+    '<p class="mut" style="margin-top:14px">Use an account created by <code>npm run seed</code> — check your terminal output for the password.</p></div>';
+}
+
+const NAV = {
+  student: [['dash', 'Dashboard'], ['profile', 'Profile'], ['att', 'Attendance'], ['res', 'Results & Exams'], ['notif', 'Notifications'],
+    ['enroll', 'Enrollments'], ['requests', 'Requests'], ['tt', 'Time Table'], ['support', 'Student Support Office'],
+    ['slip', 'Print Exam Slip'], ['transcript', 'Transcript'], ['inv', 'Invoices'], ['hostel', 'Hostel']],
+  faculty: [['classes', 'My Classes'], ['mark', 'Mark Attendance'], ['grades', 'Enter Results']],
+  admin: [['apps', 'Admissions Queue'], ['req', 'Requests Queue'], ['tickets', 'Support Queue'], ['fees', 'Fee Management'], ['notifs', 'Post Notification']],
+};
+
+function shell(body) {
+  const nav = NAV[me.role];
+  if (!nav.some(n => n[0] === tab)) tab = nav[0][0];
+  return '<div class="shell"><nav class="side"><div class="brand">ERP portal</div>' +
+    nav.map(n => '<button class="' + (n[0] === tab ? 'on' : '') + '" data-tab="' + n[0] + '">' + n[1] + '</button>').join('') +
+    '<div class="out"><span>' + me.name + '</span><br><button class="lnk" style="color:#a9c1cb" data-out>Sign out</button></div></nav>' +
+    '<main class="main">' + body + '</main></div>';
+}
+function paint(body) { document.getElementById('app').innerHTML = me ? shell(body) : gate(); }
+function render() { paint('<p class="spin">Loading…</p>'); load(); }
+
+/* ---------- data loaders per tab ---------- */
+async function load() {
+  try {
+    if (me.role === 'student') return studentLoad();
+    if (me.role === 'faculty') return facultyLoad();
+    return adminLoad();
+  } catch (e) { paint('<p class="err">' + e.message + '</p>'); }
+}
+
+async function studentLoad() {
+  if (tab === 'dash') {
+    const [profile, today, att, notif] = await Promise.all([api('/api/me/profile'), api('/api/me/today'), api('/api/me/attendance'), api('/api/notifications')]);
+    paint('<div class="quick">' +
+      '<a class="q1" href="#" onclick="return false">Website <span>&rarr;</span></a>' +
+      '<a class="q2" href="#" onclick="return false">LMS <span>&rarr;</span></a>' +
+      '<a class="q3" data-tab2="support" href="#">Student Support Service <span>&rarr;</span></a>' +
+      '<a class="q4" href="#" onclick="return false">SIRC (Library) <span>&rarr;</span></a></div>' +
+      '<div class="person" style="margin-bottom:18px"><div class="avatar">' + initials(profile.name) + '</div><div>' +
+      '<b>' + profile.name + '</b><br><span class="mut">' + profile.roll_no + '</span><br><span class="mut">' + profile.program + ' | ' + profile.faculty + '</span></div></div>' +
+      '<div class="cards">' +
+      '<div class="card"><span class="mut">Term</span><span class="n" style="font-size:1.1rem">' + (profile.admitted_term || '-') + '</span></div>' +
+      '<div class="card"><span class="mut">CGPA</span><span class="n">' + profile.cgpa + '</span></div>' +
+      '<div class="card"><span class="mut">Pass Credits</span><span class="n">' + profile.pass_credits + '</span></div>' +
+      '<div class="card"><span class="mut">F Grades</span><span class="n">' + profile.f_grades + '</span></div></div>' +
+      '<h2>Today\u2019s Classes</h2>' + (today.length ? today.map(c => '<div class="classcard"><span class="time">' + time(c.starts_at) + ' - ' + time(c.ends_at) + '</span><h3 style="margin:4px 0">' + c.title + '</h3><span class="mut">Faculty: ' + c.faculty + ' | ' + c.room + '</span></div>').join('') : '<p class="mut">No classes today.</p>') +
+      '<div class="two" style="margin-top:18px"><div><h2>Attendance</h2>' + (att.length ? att.map(a => '<div class="pbar"><b>' + a.title + '</b><div class="track"><div class="fill" style="width:' + a.percent + '%"></div></div><span>' + a.percent + '%</span></div>').join('') : '<p class="mut">No sessions recorded yet.</p>') + '</div>' +
+      '<div>' + (profile.advisor_name ? '<div class="person" style="margin-bottom:10px"><div class="avatar">' + initials(profile.advisor_name) + '</div><div><span class="mut">Student Success Advisor</span><br><b>' + profile.advisor_name + '</b><br><span class="mut">' + (profile.advisor_email || '') + '</span></div></div>' : '') +
+      (profile.supervisor_name ? '<div class="person"><div class="avatar">' + initials(profile.supervisor_name) + '</div><div><span class="mut">Supervisor</span><br><b>' + profile.supervisor_name + '</b></div></div>' : '') + '</div></div>' +
+      '<h2 style="margin-top:18px">Notifications</h2>' + notif.map(n => '<div class="notif"><b>' + esc(n.title) + '</b><p class="mut" style="margin:6px 0 0">' + esc(n.body) + '</p></div>').join(''));
+  }
+  else if (tab === 'profile') { const p = await api('/api/me/profile'); paint('<h2>Profile</h2><div class="tw"><table><tbody>' + [['Name', p.name], ['Roll number', p.roll_no], ['Program', p.program], ['Faculty', p.faculty], ['Term', p.admitted_term || '-']].map(r => '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>').join('') + '</tbody></table></div>'); }
+  else if (tab === 'att') { const a = await api('/api/me/attendance'); paint('<h2>Attendance</h2>' + (a.length ? a.map(x => '<div class="pbar"><b>' + x.title + '</b><div class="track"><div class="fill" style="width:' + x.percent + '%"></div></div><span>' + x.percent + '%</span></div>').join('') : '<p class="mut">No sessions recorded yet.</p>') + '<p class="mut" style="margin-top:14px">80% is required in every course; below 75% by the exam cut-off, you cannot sit the final exam.</p>'); }
+  else if (tab === 'res') { const r = await api('/api/me/results'); paint('<h2>Results & Exams</h2>' + resultsTable(r)); }
+  else if (tab === 'notif') { const n = await api('/api/notifications'); paint('<h2>Notifications</h2>' + n.map(x => '<div class="notif"><b>' + esc(x.title) + '</b><p class="mut" style="margin:6px 0 0">' + esc(x.body) + '</p></div>').join('')); }
+  else if (tab === 'enroll') { const r = await api('/api/me/results'); paint('<h2>Enrollments</h2><div class="tw"><table><thead><tr><th>Code</th><th>Course</th><th>Credits</th></tr></thead><tbody>' + r.map(c => '<tr><td>' + c.code + '</td><td>' + c.title + '</td><td>' + c.credit_hours + '</td></tr>').join('') + '</tbody></table></div><p><b>Total: ' + r.reduce((s, c) => s + c.credit_hours, 0) + ' credit hours</b></p>'); }
+  else if (tab === 'requests') {
+    const r = await api('/api/me/requests');
+    paint('<h2>Requests</h2><p class="mut">Choose a request type to submit.</p><div class="reqgrid">' + REQ_TYPES.map(t => '<button type="button" data-newreq="' + t + '">' + t + '</button>').join('') + '</div>' +
+      '<h3>My Requests</h3><div class="tw"><table><thead><tr><th>Ref</th><th>Type</th><th>Status</th></tr></thead><tbody id="reqbody">' + (r.length ? r.map(x => '<tr><td>' + x.request_no + '</td><td>' + x.request_type + '</td><td>' + pill(x.status) + '</td></tr>').join('') : '<tr><td colspan="3" class="mut">No requests yet.</td></tr>') + '</tbody></table></div>');
+  }
+  else if (tab === 'tt') { const t = await api('/api/me/timetable'); paint('<h2>Time Table</h2><div class="tw"><table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Room</th></tr></thead><tbody>' + (t.length ? t.map(r => '<tr><td>' + WEEKDAY[r.weekday] + '</td><td>' + time(r.starts_at) + '</td><td>' + r.title + '</td><td>' + (r.room || '-') + '</td></tr>').join('') : '<tr><td colspan="4" class="mut">No classes scheduled.</td></tr>') + '</tbody></table></div>'); }
+  else if (tab === 'support') {
+    const t = await api('/api/me/tickets');
+    paint('<h2>Student Support Office</h2><p class="mut">Raise a request — transcript, fee issue, ID card, etc.</p>' +
+      '<form id="tkt"><label for="tsub">Subject</label><input id="tsub" placeholder="e.g. Transcript request" required><button class="btn" type="submit" style="margin-top:10px">Submit request</button></form>' +
+      '<h2 style="margin-top:22px">Your requests</h2><div class="tw"><table><thead><tr><th>Ticket</th><th>Subject</th><th>Status</th></tr></thead><tbody id="tktbody">' + (t.length ? t.map(x => '<tr><td>' + x.ticket_no + '</td><td>' + esc(x.subject) + '</td><td>' + pill(x.status) + '</td></tr>').join('') : '<tr><td colspan="3" class="mut">No requests yet.</td></tr>') + '</tbody></table></div>');
+  }
+  else if (tab === 'slip') { const e = await api('/api/me/exam-slip'); paint('<h2>Exam Slip</h2><div class="tw"><table><thead><tr><th>Code</th><th>Course</th><th>Type</th><th>Date</th><th>Room</th></tr></thead><tbody>' + (e.length ? e.map(x => '<tr><td>' + x.code + '</td><td>' + x.title + '</td><td>' + x.exam_type + '</td><td>' + x.held_on + '</td><td>' + (x.room || '-') + '</td></tr>').join('') : '<tr><td colspan="5" class="mut">No exams scheduled yet.</td></tr>') + '</tbody></table></div><button class="btn alt" data-print style="margin-top:12px">Print exam slip</button>'); }
+  else if (tab === 'transcript') { const t = await api('/api/me/transcript'); const p = await api('/api/me/profile'); paint('<h2>Unofficial Transcript</h2><p><b>' + p.name + '</b> \u2014 ' + p.program + ' \u2014 Roll no: ' + p.roll_no + '</p>' + resultsTable(t, true) + '<p><b>CGPA: ' + p.cgpa + '</b></p><button class="btn alt" data-print>Print / Save as PDF</button><p class="mut">Marked "Unofficial" \u2014 a real transcript needs the registrar\u2019s stamp.</p>'); }
+  else if (tab === 'inv') { const f = await api('/api/me/fees'); paint('<h2>Invoices</h2><div class="tw"><table><thead><tr><th>Voucher</th><th>Term</th><th>Amount</th><th>Due</th><th>Status</th></tr></thead><tbody>' + (f.length ? f.map(x => '<tr><td>' + x.voucher_no + '</td><td>' + x.term + '</td><td>' + money(x.amount) + '</td><td>' + x.due_on + '</td><td>' + pill(x.status === 'paid' ? 'paid' : 'unpaid') + '</td></tr>').join('') : '<tr><td colspan="5" class="mut">No vouchers yet.</td></tr>') + '</tbody></table></div>'); }
+  else if (tab === 'hostel') { const h = await api('/api/me/hostel'); paint('<h2>Hostel</h2>' + (h ? '<div class="card" style="max-width:340px"><span class="mut">Room</span><span class="n" style="font-size:1.1rem">' + h.block + ' \u2014 ' + h.room_no + '</span></div><p class="mut" style="margin-top:12px">Allocated on ' + h.allocated_on + '.</p>' : '<div class="card" style="max-width:340px"><span class="mut">Status</span><span class="n" style="font-size:1.1rem">Not allotted</span></div>')); }
+}
+
+function initials(n) { return (n || '').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(); }
+function esc(s) { return (s || '').replace(/</g, '&lt;'); }
+function pill(s) { return '<span class="pill ' + (['paid', 'closed', 'approved'].includes(s) ? 'ok' : 'warn') + '">' + s.replace('_', ' ') + '</span>'; }
+function resultsTable(r, hideCredits) {
+  let cr = 0, q = 0; const G = { A: 4, 'A-': 3.67, 'B+': 3.33, B: 3, 'B-': 2.67, 'C+': 2.33, C: 2, D: 1, F: 0 };
+  r.forEach(c => { if (c.grade) { cr += c.credit_hours; q += c.credit_hours * (G[c.grade] || 0); } });
+  const rows = r.filter(c => hideCredits ? c.grade : true);
+  return '<div class="tw"><table><thead><tr><th>Term</th><th>Code</th><th>Course</th><th>Credits</th><th>Marks</th><th>Grade</th></tr></thead><tbody>' +
+    (rows.length ? rows.map(c => '<tr><td>' + (c.term || '-') + '</td><td>' + c.code + '</td><td>' + c.title + '</td><td>' + c.credit_hours + '</td><td>' + (c.marks ?? '-') + '</td><td>' + (c.grade || '-') + '</td></tr>').join('') : '<tr><td colspan="6" class="mut">No results yet.</td></tr>') +
+    '</tbody></table></div>' + (cr ? '<p><b>Semester GPA: ' + (q / cr).toFixed(2) + '</b></p>' : '');
+}
+
+/* ---------- faculty ---------- */
+async function facultyLoad() {
+  if (tab === 'classes') {
+    const o = await api('/api/faculty/offerings');
+    paint('<h2>My Classes</h2><div class="cards">' + (o.length ? o.map(c => '<div class="card"><span class="mut">' + c.code + '</span><span class="n" style="font-size:1.05rem">' + c.title + '</span><span class="mut">' + c.term + '</span></div>').join('') : '<p class="mut">No classes assigned yet.</p>') + '</div>');
+  } else if (tab === 'mark' || tab === 'grades') {
+    const o = await api('/api/faculty/offerings');
+    if (!o.length) return paint('<h2>' + (tab === 'mark' ? 'Mark Attendance' : 'Enter Results') + '</h2><p class="mut">No classes assigned yet.</p>');
+    window._off = window._off || o[0].id;
+    const students = await api('/api/faculty/offerings/' + window._off + '/students');
+    if (tab === 'mark') {
+      paint('<h2>Mark Attendance</h2>' + offerSelect(o) + '<label for="hd">Date</label><input id="hd" type="date" value="' + new Date().toISOString().slice(0, 10) + '">' +
+        '<div class="tw" style="margin-top:12px"><table><thead><tr><th>Student</th><th>Present</th></tr></thead><tbody>' + students.map(s => '<tr><td>' + s.full_name + '</td><td><input type="checkbox" checked data-sid="' + s.student_id + '"></td></tr>').join('') + '</tbody></table></div>' +
+        '<p><button class="btn" data-savemark>Save attendance</button> <span class="mut" id="msg"></span></p>');
+    } else {
+      paint('<h2>Enter Results</h2>' + offerSelect(o) +
+        '<div class="tw" style="margin-top:12px"><table><thead><tr><th>Student</th><th>Marks</th></tr></thead><tbody>' + students.map(s => '<tr><td>' + s.full_name + '</td><td><input type="number" min="0" max="100" value="70" data-sid="' + s.student_id + '" style="width:90px"></td></tr>').join('') + '</tbody></table></div>' +
+        '<p><button class="btn" data-savegrades>Save results</button> <span class="mut" id="msg"></span></p>');
+    }
+  }
+}
+function offerSelect(o) { return '<label for="offsel">Course</label><select id="offsel">' + o.map(c => '<option value="' + c.id + '"' + (c.id === window._off ? ' selected' : '') + '>' + c.code + ' ' + c.title + ' (' + c.term + ')</option>').join('') + '</select>'; }
+
+/* ---------- admin ---------- */
+async function adminLoad() {
+  if (tab === 'apps') {
+    const a = await api('/api/admin/applications');
+    paint('<h2>Admissions Queue</h2><div class="tw"><table><thead><tr><th>App #</th><th>Name</th><th>Program</th><th>Status</th><th></th></tr></thead><tbody>' +
+      (a.length ? a.map(x => '<tr><td>' + x.application_no + '</td><td>' + x.full_name + '</td><td>' + x.program + '</td><td>' + pill(x.status) + '</td><td>' + appActions(x.application_no) + '</td></tr>').join('') : '<tr><td colspan="5" class="mut">No applications yet.</td></tr>') + '</tbody></table></div>');
+  } else if (tab === 'req') {
+    const r = await api('/api/admin/requests');
+    paint('<h2>Requests Queue</h2><div class="tw"><table><thead><tr><th>Ref</th><th>Student</th><th>Type</th><th>Status</th><th></th></tr></thead><tbody>' +
+      (r.length ? r.map(x => '<tr><td>' + x.request_no + '</td><td>' + x.student + '</td><td>' + x.request_type + '</td><td>' + pill(x.status) + '</td><td><button class="btn alt" data-appr="' + x.request_no + '">Approve</button></td></tr>').join('') : '<tr><td colspan="5" class="mut">No requests yet.</td></tr>') + '</tbody></table></div>');
+  } else if (tab === 'tickets') {
+    const t = await api('/api/admin/tickets');
+    paint('<h2>Support Queue</h2><div class="tw"><table><thead><tr><th>Ticket</th><th>Student</th><th>Subject</th><th>Status</th><th></th></tr></thead><tbody>' +
+      (t.length ? t.map(x => '<tr><td>' + x.ticket_no + '</td><td>' + x.student + '</td><td>' + esc(x.subject) + '</td><td>' + pill(x.status) + '</td><td>' + (x.status === 'open' ? '<button class="btn alt" data-close="' + x.ticket_no + '">Close</button>' : '') + '</td></tr>').join('') : '<tr><td colspan="5" class="mut">No tickets yet.</td></tr>') + '</tbody></table></div>');
+  } else if (tab === 'fees') {
+    const f = await api('/api/admin/fees');
+    const paid = f.filter(x => x.status === 'paid').length;
+    paint('<h2>Fee Management</h2><div class="cards"><div class="card"><span class="mut">Vouchers</span><span class="n">' + f.length + '</span></div><div class="card"><span class="mut">Paid</span><span class="n">' + paid + '</span></div><div class="card"><span class="mut">Unpaid</span><span class="n">' + (f.length - paid) + '</span></div></div>' +
+      '<div class="tw"><table><thead><tr><th>Voucher</th><th>Student</th><th>Term</th><th>Amount</th><th>Status</th></tr></thead><tbody>' + f.map(x => '<tr><td>' + x.voucher_no + '</td><td>' + x.student + '</td><td>' + x.term + '</td><td>' + money(x.amount) + '</td><td>' + pill(x.status) + '</td></tr>').join('') + '</tbody></table></div>');
+  } else if (tab === 'notifs') {
+    paint('<h2>Post Notification</h2><form id="notifform"><label for="nt">Title</label><input id="nt" required><label for="nb">Message</label><textarea id="nb" rows="3" required></textarea><button class="btn" type="submit" style="margin-top:10px">Post</button></form><p id="nmsg" class="mut"></p>');
+  }
+}
+function appActions(no) { return ['accepted', 'rejected'].map(s => '<button class="btn alt" style="margin-right:6px" data-app="' + no + '|' + s + '">' + s + '</button>').join(''); }
+
+/* ---------- events ---------- */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button,a'); if (!b) return;
+  try {
+    if (b.dataset.role) { role = b.dataset.role; err = ''; paint(gate()); document.getElementById('em')?.focus(); }
+    else if (b.hasAttribute('data-back')) { role = null; err = ''; paint(gate()); }
+    else if (b.hasAttribute('data-out')) { me = null; token = null; role = null; tab = ''; paint(gate()); }
+    else if (b.dataset.tab2) { tab = b.dataset.tab2; render(); }
+    else if (b.dataset.tab !== undefined) { tab = b.dataset.tab; render(); }
+    else if (b.hasAttribute('data-print')) { window.print(); }
+    else if (b.dataset.newreq) { await api('/api/me/requests', { method: 'POST', body: JSON.stringify({ request_type: b.dataset.newreq }) }); render(); }
+    else if (b.dataset.app) { const [no, status] = b.dataset.app.split('|'); await api('/api/admin/applications/' + no, { method: 'PATCH', body: JSON.stringify({ status }) }); render(); }
+    else if (b.dataset.appr) { await api('/api/admin/requests/' + b.dataset.appr, { method: 'PATCH', body: JSON.stringify({ status: 'approved' }) }); render(); }
+    else if (b.dataset.close) { await api('/api/admin/tickets/' + b.dataset.close, { method: 'PATCH', body: JSON.stringify({ status: 'closed' }) }); render(); }
+    else if (b.hasAttribute('data-savemark')) {
+      const sel = document.getElementById('offsel'); window._off = +sel.value;
+      const boxes = [...document.querySelectorAll('[data-sid]')];
+      const marks = boxes.map(x => ({ student_id: +x.dataset.sid, present: x.checked }));
+      await api('/api/faculty/attendance', { method: 'POST', body: JSON.stringify({ offering_id: window._off, held_on: document.getElementById('hd').value, marks }) });
+      document.getElementById('msg').textContent = 'Saved.';
+    }
+    else if (b.hasAttribute('data-savegrades')) {
+      const sel = document.getElementById('offsel'); window._off = +sel.value;
+      const boxes = [...document.querySelectorAll('[data-sid]')];
+      const marks = boxes.map(x => ({ student_id: +x.dataset.sid, marks: +x.value }));
+      await api('/api/faculty/results', { method: 'POST', body: JSON.stringify({ offering_id: window._off, marks }) });
+      document.getElementById('msg').textContent = 'Saved.';
+    }
+  } catch (ex) { alert(ex.message); }
+});
+document.addEventListener('change', e => { if (e.target.id === 'offsel') { window._off = +e.target.value; render(); } });
+document.addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    if (e.target.id === 'tkt') { await api('/api/me/tickets', { method: 'POST', body: JSON.stringify({ subject: document.getElementById('tsub').value }) }); render(); return; }
+    if (e.target.id === 'notifform') { await api('/api/admin/notifications', { method: 'POST', body: JSON.stringify({ title: document.getElementById('nt').value, body: document.getElementById('nb').value }) }); document.getElementById('nmsg').textContent = 'Posted.'; e.target.reset(); return; }
+    if (e.target.id === 'login') {
+      const email = document.getElementById('em').value.trim(), password = document.getElementById('pw').value;
+      const j = await api('/api/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+      if (j.role !== role) { err = 'That account is not a ' + role + ' account.'; paint(gate()); return; }
+      token = j.token; me = { name: j.name, role: j.role }; tab = ''; err = ''; render();
+    }
+  } catch (ex) { err = ex.message; paint(gate()); document.getElementById('em')?.focus(); }
+});
+paint(gate());
+</script>
+</body>
+</html>
